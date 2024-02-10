@@ -149,9 +149,9 @@ def Check_volume():
     planets_can_fit_in_sun = P_total_volume > S_volume
     print("_____________________________________________________________________________")
     print()
-    print('Sun volume: ', S_volume)
-    print('Total planets volume:', P_total_volume)
-    print("All the planets’ volumes added together could fit in the Sun:", planets_can_fit_in_sun)
+    print('Volume of the Sun: ', S_volume)
+    print('Total Volume of all the Planets:', P_total_volume)
+    print("All the planet's volumes added together could fit in the Sun:", planets_can_fit_in_sun)
     print("_____________________________________________________________________________")
 
     
