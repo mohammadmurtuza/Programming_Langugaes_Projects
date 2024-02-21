@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Hotk76+pE8OjWYBshfPwoV8WGblWAHfsud/W1X6Ykw1N6U190YnQnOOlKc1ky4EECxiCe0E9YJxOXtbRpbt+sg==",
+  "success": true,
+  "projectFilePath": "/Users/murtuza/Documents/GitHub/Programming_Langugaes_Projects/Mini Project 2/project2/project2.fsproj",
+  "expectedPackageFiles": [
+    "/Users/murtuza/.nuget/packages/fsharp.core/8.0.200/fsharp.core.8.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}
