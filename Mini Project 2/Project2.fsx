@@ -1,3 +1,4 @@
+// Decimal to Binary
 let decimalToBinaryTailRecursive num =
     let rec convertToBinary n acc i =
         if i < 0 then acc
@@ -5,13 +6,13 @@ let decimalToBinaryTailRecursive num =
             let bit = (n >>> i) &&& 1
             convertToBinary n (bit :: acc) (i - 1)
 
-    if num < 0 || num > 255 then failwith "Number must be between 0 and 255"
+    if num < -128 || num > 127 then failwith "Number must be between -128 and 127"
     else 
         let binaryList = convertToBinary num [] 7
         let paddedList = List.init (8 - List.length binaryList) (fun _ -> 0) @ binaryList
         List.rev paddedList
 
-        
+// Binary to Decimal   
 let binaryToDecimalTailRecursive binaryList =
     let rec binaryToDecimalTailRecursive lst pow acc =
         match lst with
@@ -22,8 +23,7 @@ let binaryToDecimalTailRecursive binaryList =
 
     binaryToDecimalTailRecursive binaryList (pown 2 (List.length binaryList - 1)) 0
 
-
-
+// Binary Operations ADD and SUB
 let addBinary (binaryList1: int list) (binaryList2: int list) : int list =
     let rec addHelper list1 list2 carry result =
         match list1, list2 with
@@ -41,19 +41,20 @@ let addBinary (binaryList1: int list) (binaryList2: int list) : int list =
     let result = addHelper (List.rev binaryList1) (List.rev binaryList2) 0 []
     if result.[0] = 0 then result else List.rev result
 
-
-
+// Binary to String
 let binaryToString (binaryList: int list) (reverse: bool) : string =
     let processedList = if reverse then List.rev binaryList else binaryList
     processedList |> List.map string |> String.concat ""
 
-// Dealing with negative numbers:
-// Get absolute number
+// Negative Numbers:
+// Get Absolute Number
 let absoluteValue (num: int) : int = if num < 0 then -num else num
+
 // Perform NOT
 let NOT (binaryList: int list) : int list =
     List.map (fun bit -> if bit = 0 then 1 else 0) binaryList
-// Add one
+
+// Add 1
 let addOne (binaryList: int list) : int list =
     let rec addOneHelper list carry result =
         match list with
@@ -70,15 +71,19 @@ let addOne (binaryList: int list) : int list =
 let convertHexToBinary (hex: int) : int list =
     let binaryString = System.Convert.ToString(hex, 2).PadLeft(8, '0')
     binaryString |> Seq.map (fun c -> int (c.ToString())) |> List.ofSeq
+
 // AND:
 let bitwiseAND (binaryList1: int list) (binaryList2: int list) : int list =
     List.map2 (fun bit1 bit2 -> if bit1 = 1 && bit2 = 1 then 1 else 0) binaryList1 binaryList2
+
 // OR:
 let bitwiseOR (binaryList1: int list) (binaryList2: int list) : int list =
     List.map2 (fun bit1 bit2 -> if bit1 = 1 || bit2 = 1 then 1 else 0) binaryList1 binaryList2
+
 // XOR:
 let bitwiseXOR (binaryList1: int list) (binaryList2: int list) : int list =
     List.map2 (fun bit1 bit2 -> if bit1 = bit2 then 0 else 1) binaryList1 binaryList2
+
 // NOT:
 let bitwiseNOT (binaryList: int list) : int list =
     List.map (fun bit -> if bit = 0 then 1 else 0) binaryList
@@ -89,7 +94,7 @@ let printArithmeticOperations num1 num2 =
     let binaryList1 = decimalToBinaryTailRecursive (absoluteValue num1)
     let binaryList2 = decimalToBinaryTailRecursive (absoluteValue num2)
 
-    if num1 < 0 && num2 < 0 then
+    if num1 < 0 && num2 < 0 then // Both Numbers Negative
         let complementBinary1 = addOne (NOT binaryList1)
         let complementBinary2 = addOne (NOT binaryList2)
         let result = addBinary complementBinary1 complementBinary2
@@ -114,7 +119,7 @@ let printArithmeticOperations num1 num2 =
         printfn "----------------------"
         
         printfn ""
-    elif num1 < 0 || num2 < 0 then
+    elif num1 < 0 || num2 < 0 then // Subtraction
         let positiveNum = if num1 > 0 then num1 else num2
         let negativeNum = if num1 < 0 then num1 else num2
         let positiveBinary = if num1 > 0 then binaryList1 else binaryList2
@@ -144,7 +149,7 @@ let printArithmeticOperations num1 num2 =
         printfn "----------------------"
         
         printf ""
-    else
+    else //Addition
         let result = addBinary binaryList1 binaryList2
 
         let truncatedResult =
@@ -162,6 +167,7 @@ let printArithmeticOperations num1 num2 =
         
         printfn ""
 
+// AND
 let printLogicalOperationsAND num1 num2 =
     let binaryList1 = convertHexToBinary num1
     let binaryList2 = convertHexToBinary num2
@@ -175,6 +181,7 @@ let printLogicalOperationsAND num1 num2 =
     printfn "----------------------"
     
     printfn ""
+
 // OR
 let printLogicalOperationsOR num1 num2 =
     let binaryList1 = convertHexToBinary num1
@@ -188,6 +195,7 @@ let printLogicalOperationsOR num1 num2 =
     printfn "----------------------"
     
     printfn ""
+
 // XOR
 let printLogicalOperationsXOR num1 num2 =
     let binaryList1 = convertHexToBinary num1
@@ -201,6 +209,7 @@ let printLogicalOperationsXOR num1 num2 =
     printfn "----------------------"
     
     printfn ""
+
 // NOT
 let printLogicalOperationsNOT num =
     let binaryList = convertHexToBinary num
@@ -244,19 +253,31 @@ printfn "#######################################################################
 printfn "%s" asciiArt2
 printfn "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 
+
 // Arithmetic Operations
-printArithmeticOperations 30 7
-printArithmeticOperations -23 23
+printArithmeticOperations 121 6
+printArithmeticOperations 127 -6
+printArithmeticOperations 5 -5
+printArithmeticOperations 5 -(-5)
+printArithmeticOperations 64 64
+printArithmeticOperations 10 -11
 printArithmeticOperations 40 -11
 printArithmeticOperations -20 -20
-// Run Logical Operations print Part
+
+
+// Logical Operations
 printfn "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-"
 printfn "%s" asciiArt3
 printfn "&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!"
 printLogicalOperationsAND 0x48 0x84
 printLogicalOperationsOR 0x47 0x84
 printLogicalOperationsXOR 0xA5 0xF1
-printLogicalOperationsNOT 0xA1
+printLogicalOperationsNOT 0xA4
+printLogicalOperationsAND 0xF9 0x9F
+printLogicalOperationsOR 0x01 0x11
+printLogicalOperationsXOR 0xFF 0x88
+printLogicalOperationsNOT 0xA5
+// printArithmeticOperations 128 1 //creates error when run cause number is greater than 127/
 printfn "&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!"
 printfn ""
 printfn "###########################################################################################################################################"
