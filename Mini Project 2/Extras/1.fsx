@@ -88,81 +88,44 @@ let bitwiseNOT (binaryList: int list) : int list =
 
 // print Arithmetic operation
 let printArithmeticOperations num1 num2 =
+    let addOne (binaryList: int list) : int list =
+        let rec addOneHelper list carry result =
+            match list with
+            | [] -> if carry = 1 then [ 1 ] else result
+            | bit :: tail ->
+                let sum = bit + carry
+                let newBit = sum % 2
+                let newCarry = if sum > 1 then 1 else 0
+                addOneHelper tail newCarry (newBit :: result)
+
+        addOneHelper (List.rev binaryList) 1 []
+
+    let subtract (binaryList1: int list) (binaryList2: int list) : int list =
+        let negate = addOne (List.map (fun bit -> if bit = 0 then 1 else 0) binaryList2)
+        addBinary binaryList1 negate
+
     let binaryList1 = decimalToBinaryTailRecursive (absoluteValue num1)
     let binaryList2 = decimalToBinaryTailRecursive (absoluteValue num2)
 
-    if num1 < 0 && num2 < 0 then // Both Numbers Negative
-        let complementBinary1 = addOne (NOT binaryList1)
-        let complementBinary2 = addOne (NOT binaryList2)
-        let result = addBinary complementBinary1 complementBinary2
+    let (operation, result) =
+        if num1 < 0 && num2 < 0 then // Both Numbers Negative
+            let result = addBinary binaryList1 binaryList2
+            ("Addition", result)
+        elif num1 < 0 || num2 < 0 then // Subtraction
+            let result = subtract binaryList1 binaryList2
+            ("Subtraction", result)
+        else //Addition
+            let result = addBinary binaryList1 binaryList2
+            ("Addition", result)
 
-        let truncatedResult =
-            if List.length result > 8 then
-                List.skip (List.length result - 8) result
-            else
-                result
-        printfn ""
-        printfn "Addition: %d  %d = " num1 num2
-        printfn "%d -> %s" (absoluteValue num1) (binaryToString binaryList1 false)
-        printfn "NOT -> %s" (binaryToString (NOT binaryList1) false)
-        printfn "ADD 1 -> %s" (binaryToString complementBinary1 false)
-        printfn "-%d -> %s" (absoluteValue num1) (binaryToString complementBinary1 false)
-        printfn "%d -> %s" (absoluteValue num2) (binaryToString binaryList2 false)
-        printfn "NOT -> %s" (binaryToString (NOT binaryList2) false)
-        printfn "ADD 1 -> %s" (binaryToString complementBinary2 false)
-        printfn "-%d -> %s" (absoluteValue num2) (binaryToString complementBinary2 false)
-        printfn "----     -------------"
-        printfn "%d -> %s" (num1 + num2) (binaryToString truncatedResult true)
-        printfn "----------------------"
-        
-        printfn ""
-    elif num1 < 0 || num2 < 0 then // Subtraction
-        let positiveNum = if num1 > 0 then num1 else num2
-        let negativeNum = if num1 < 0 then num1 else num2
-        let positiveBinary = if num1 > 0 then binaryList1 else binaryList2
-        let negativeBinary = NOT(if num1 < 0 then binaryList1 else binaryList2)
-        let addOneResult = addOne negativeBinary
-        let result = addBinary positiveBinary addOneResult
-
-        let truncatedResult =
-            if List.length result > 8 then
-                List.skip (List.length result - 8) result
-            else
-                result
-        printfn ""
-        printfn "Subtraction: %d  %d " num1 num2
-        printfn "%d -> %s" positiveNum (binaryToString positiveBinary false)
-
-        printfn
-            "%d -> %s"
-            (absoluteValue negativeNum)
-            (binaryToString (decimalToBinaryTailRecursive (absoluteValue negativeNum)) false)
-
-        printfn "NOT -> %s" (binaryToString negativeBinary false)
-        printfn "ADD 1 -> %s" (binaryToString addOneResult false)
-        printfn "-%d -> %s" (absoluteValue negativeNum) (binaryToString addOneResult false)
-        printfn "----     -------------"
-        printfn "%d -> %s" (num1 + num2) (binaryToString truncatedResult true)
-        printfn "----------------------"
-        
-        printf ""
-    else //Addition
-        let result = addBinary binaryList1 binaryList2
-
-        let truncatedResult =
-            if List.length result > 8 then
-                List.skip (List.length result - 8) result
-            else
-                result
-        printfn ""
-        printfn "Addition : %d + %d " num1 num2
-        printfn "%d -> %s" num1 (binaryToString binaryList1 false)
-        printfn "%d -> %s" num2 (binaryToString binaryList2 false)
-        printfn "----     -------------"
-        printfn "%d -> %s" (num1 + num2) (binaryToString truncatedResult true)
-        printfn "----------------------"
-        
-        printfn ""
+    printfn ""
+    printfn "%s: %d %d = " operation num1 num2
+    printfn "%d -> %s" (absoluteValue num1) (binaryToString binaryList1 false)
+    printfn "%d -> %s" (absoluteValue num2) (binaryToString binaryList2 false)
+    printfn "----     -------------"
+    printfn "%d -> %s" (binaryToDecimalTailRecursive result) (binaryToString result true)
+    printfn "----------------------"
+    printfn ""
 
 // AND
 let printLogicalOperationsAND num1 num2 =
