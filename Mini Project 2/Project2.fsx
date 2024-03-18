@@ -27,19 +27,16 @@ let binaryToDecimalTailRecursive binaryList =
 let addBinary (binaryList1: int list) (binaryList2: int list) : int list =
     let rec addHelper list1 list2 carry result =
         match list1, list2 with
-        | [], [] -> if carry = 1 then carry :: result else result
-        | [], _
-        | _, [] -> 
-            let shorter, longer = if List.length list1 < List.length list2 then list1, list2 else list2, list1
-            addHelper shorter (List.replicate (List.length longer - List.length shorter) 0 @ longer) carry result
+        | [], [] -> if carry = 1 then result else result 
+        | [], _ | _, [] -> failwith "Input lists must have the same length"
         | bit1 :: tail1, bit2 :: tail2 ->
             let sum = bit1 + bit2 + carry
             let newBit = sum % 2
             let newCarry = if sum > 1 then 1 else 0
             addHelper tail1 tail2 newCarry (newBit :: result)
-
     let result = addHelper (List.rev binaryList1) (List.rev binaryList2) 0 []
-    if result.[0] = 0 then result else List.rev result
+    List.rev result 
+
 
 // Binary to String
 let binaryToString (binaryList: int list) (reverse: bool) : string =
@@ -143,7 +140,7 @@ let printArithmeticOperations num1 num2 =
 
         printfn "NOT -> %s" (binaryToString negativeBinary false)
         printfn "ADD 1 -> %s" (binaryToString addOneResult false)
-        printfn "-%d -> %s" (absoluteValue negativeNum) (binaryToString addOneResult true)
+        printfn "-%d -> %s" (absoluteValue negativeNum) (binaryToString addOneResult false)
         printfn "----     -------------"
         printfn "%d -> %s" (num1 + num2) (binaryToString truncatedResult true)
         printfn "----------------------"
@@ -277,7 +274,7 @@ printLogicalOperationsAND 0xF9 0x9F
 printLogicalOperationsOR 0x01 0x11
 printLogicalOperationsXOR 0xFF 0x88
 printLogicalOperationsNOT 0xA5
-// printArithmeticOperations 128 1 //creates error when run cause number is greater than 127/
+printArithmeticOperations 128 1 //creates error when run cause number is greater than 127/
 printfn "&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!&&||^!"
 printfn ""
 printfn "###########################################################################################################################################"
