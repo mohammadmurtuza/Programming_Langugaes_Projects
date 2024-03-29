@@ -6,6 +6,8 @@ flight(2134, ord, sfo, 0930, 1345).
 flight(954, phx, dfw, 1655, 1800).
 flight(1176, sfo, lax, 1430, 1545).
 flight(205, lax, lga, 1630, 2210).
+flight(111, lga, bos, 0645, 0745).
+flight(222, bos, ewr, 0750, 0845).
 
 % Where does the flight from PHX go?
 find_destinations_from_phx :-
@@ -17,6 +19,7 @@ find_destinations_from_phx.
 % Is there a flight to PHX?
 check_flight_to_phx :-
     (   flight(_, _, phx, _, _)).
+check_flight_to_phx.
 
 % What time is does the flight from BOS land?
 landing_details_from_bos :-
@@ -31,6 +34,7 @@ ord_sfo_after_ewr_ord :-
     flight(OrdSfoFlight, ord, sfo, OrdSfoDepartureTime, _),
     EwrOrdArrivalTime < OrdSfoDepartureTime,
     format('Yes, Flight ~w from ORD to SFO departs after Flight ~w from EWR to ORD lands.', [OrdSfoFlight, EwrOrdFlight]).
+ord_sfo_after_ewr_ord.
 
 % What time do the flights to ORD arrive?
 arrival_details_to_ord :-
