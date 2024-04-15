@@ -53,28 +53,23 @@ valid_connection(ArrivalTime1, DepartureTime2) :-
     DepartureMinutes2 is Hours2 * 60 + Minutes2,
     % Check if there is enough time for the connection
     DepartureMinutes2 > ArrivalMinutes1.
-
-
+:- style_check(-singleton).
 % Direct flight from LGA to LAX
 direct_flight_lga_lax :-
     flight(Number, lga, lax, Departure, Arrival),
     format('Direct flight: ~w from LGA to LAX, departing at ~w, arriving at ~w~n', [Number, Departure, Arrival]).
 
-% Connecting flights from LGA to LAX
-connecting_flight_lga_lax :-
-    flight(FirstLeg, lga, ord, Departure1, Arrival1),
-    flight(SecondLeg, ord, sfo, Departure2, Arrival2),
-    valid_connection(Arrival1, Departure2),
-    flight(FinalLeg, sfo, lax, Departure3, Arrival3),
-    valid_connection(Arrival2, Departure3),
-    format('Connecting flights: Flight ~w from LGA departs at ~w and lands in ORD at ~w, Flight ~w from ORD departs at ~w and lands in SFO at ~w, Flight ~w from SFO departs at ~w and lands in LAX at ~w.~n', 
-            [FirstLeg, Departure1, Arrival1, SecondLeg, Departure2, Arrival2, FinalLeg, Departure3, Arrival3]).
 
+% Rule to find valid routes between two airports
+route(Start, End, Route) :-
+    route(Start, End, [Start], Route).
 
+route(Start, End, Visited, Route) :-
+    flight(FlightNumber, Start, Next, _, ArrivalTime),
+    \+ member(Next, Visited),  % Ensure the next airport has not been visited yet
+    flight(FlightNumberNext, Next, _, DepartureTime, _),
+    ArrivalTime < DepartureTime, % Ensure arrival is before departure
+    valid_connection(ArrivalTime, DepartureTime), % Check for valid connection time
+    (Next = End ; route(Next, End, [Next|Visited], RouteRest)),
+    Route = [[FlightNumber, Start, Next] | RouteRest].
 
-% Find all routes from LGA to LAX
-find_routes_lga_lax :-
-    (   direct_flight_lga_lax
-    ;   connecting_flight_lga_lax
-    ).
-find_routes_lga_lax.
