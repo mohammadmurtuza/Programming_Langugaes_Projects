@@ -60,7 +60,7 @@ direct_flight_lga_lax :-
     format('Direct flight: ~w from LGA to LAX, departing at ~w, arriving at ~w~n', [Number, Departure, Arrival]).
 
 
-% Rule to find valid routes between two airports
+% Find All Available Routes
 route(Start, End, Route) :-
     route(Start, End, [Start], Route).
 
